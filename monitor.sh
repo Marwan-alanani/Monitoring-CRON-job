@@ -8,6 +8,11 @@ YELLOW="\e[33m"
 BLUE="\e[34m"
 GRAY="\e[37m"
 MAGNETA="\e[35m"
+function KbToGb()
+{
+	divisor=$(( 1024*1024 ))
+	echo $(( $1 / $divisor ))
+}
 function warn()
 {
 	echo -e "${RED}warn message${NC}"
@@ -15,9 +20,7 @@ function warn()
 
 function title()
 {
-	printf "${YELLOW}-----------------------${NC}"
-	printf "${BLUE} $1 ${NC}"
-	echo -e "${YELLOW}-----------------------${NC}"
+	echo -e "${BLUE}$1:${NC}"
 }
 
 function annotate()
@@ -28,7 +31,7 @@ function annotate()
 annotate
 
 title "Disk Usage"
-disk_use="$(df --output=target,pcent)"
+disk_use="$(df --output=source,size,used,avail,pcent,target)"
 echo "$disk_use"
 
 out="$( df --output=pcent )"
@@ -58,8 +61,11 @@ annotate
 title "Memory Usage"
 out=$(free | awk 'NR==2 {print $2,$3,$4}')
 arr=($out)
-total=${arr[0]}
+total=$(( ${arr[0]} ))
+total=$( KbToGb $total ) 
 used=${arr[1]}
+used=$( KbToGb $used )
 free=${arr[2]}
-echo "total:$total  used:$used  free:$free"
+free=$( KbToGb $free )
+printf "Total Memory:${total}GB\nUsed Memory:${used}GB\nFree Memory:${free}GB\n"
 annotate
