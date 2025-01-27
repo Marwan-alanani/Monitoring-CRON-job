@@ -15,9 +15,9 @@ function warn()
 
 function title()
 {
-	printf "                                       "
+	printf "${YELLOW}-----------------------${NC}"
 	printf "${BLUE} $1 ${NC}"
-	echo ""
+	echo -e "${YELLOW}-----------------------${NC}"
 }
 
 function annotate()
