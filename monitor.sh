@@ -48,13 +48,19 @@ do
 		row[1]="Size"
 		#echo "${row[0]}"
 	fi
-
+	before_l=$(( ${#row[@]} -2 ))
 	for (( j=0;j<${#row[@]};j++ ));
 	do
-		if [ $i -eq 0 ] && [ $j -eq $(( ${#row[@]} - 1 )) ];then
+		if [ $i -eq 0 ] && [ $j -eq $before_l ]
+		then
 			printf "%s " "${row[$j]}"
 			continue
-		fi
+		elif [ $i -ne 0 ] && [ $j -ge 1 ] && [ $j -le 3 ]
+		then
+			row[$j]=$(KbToGb ${row[$j]})
+			row[$j]="${row[$j]}G"
+		fi 
+		
 		printf "%-18s" "${row[$j]}"
 	done
 	echo ""
