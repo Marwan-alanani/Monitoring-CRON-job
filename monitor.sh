@@ -8,14 +8,10 @@ YELLOW="\e[33m"
 BLUE="\e[34m"
 GRAY="\e[37m"
 MAGNETA="\e[35m"
-function KbToGb()
-{
-	divisor=$(( 1024*1024 ))
-	echo $(( $1 / $divisor ))
-}
+
 function warn()
 {
-	echo -e "${RED}warn message${NC}"
+	echo -e "${RED}Warning: $1 is above 80% usage${NC}"
 }
 
 function title()
@@ -27,60 +23,32 @@ function annotate()
 {
 	echo -e "${YELLOW}=============================================================${NC}"
 }
-
+send_mail=0
 date_=$(date)
 echo -e "${BLUE}System Monitoring Report - $date_"
 
 annotate
 
 title "Disk Usage"
-disk_use="$(df --output=source,size,used,avail,pcent,target)"
-IFS=$'\n' ;
-read -d '' -r -a y <<<"$disk_use"
-IFS=$' \n\t'
-y_len=${#y[@]}
-
-for (( i=0;i<${y_len};i++ ));
+disk_use="$(df --output=source,size,used,avail,pcent,target -h)"
+echo "$disk_use"
+sources="$(df --output=source -h)"
+sources=($sources)
+percentages="$(df --output=pcent -h)"
+percentages=($percentages)
+i=0
+for percent in "${percentages[@]}"
 do
-	row="${y[$i]}"
-	row=($row)
-	if [ $i -eq 0 ];then
-		row[1]="Size"
-		#echo "${row[0]}"
+	percent=${percent::-1}
+	if [ $i -gt 0 ] && [ $percent -ge 80 ]
+	then
+		warn "${sources[$i]}"
 	fi
-	before_l=$(( ${#row[@]} -2 ))
-	for (( j=0;j<${#row[@]};j++ ));
-	do
-		if [ $i -eq 0 ] && [ $j -eq $before_l ]
-		then
-			printf "%s " "${row[$j]}"
-			continue
-		elif [ $i -ne 0 ] && [ $j -ge 1 ] && [ $j -le 3 ]
-		then
-			row[$j]=$(KbToGb ${row[$j]})
-			row[$j]="${row[$j]}G"
-		fi 
-		
-		printf "%-18s" "${row[$j]}"
-	done
-	echo ""
+	i=$(( "$i" + 1 ))
 done
 
-out="$( df --output=pcent )"
-i=-1
-for usage in $out
-do
-	i=$(( $i + 1 ))
-	if [ "$i" -eq 0 ];then 
-		continue
-	fi
-	usage="${usage::-1}"
-	if [ $usage -ge 60 ];then
-		warn
-		break
-	fi
-done
-echo "";echo ""
+
+
 
 # i need to fix this
 title "CPU Usage"
