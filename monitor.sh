@@ -63,5 +63,5 @@ free=${arr[2]}
 printf "Total Memory:${total}\nUsed Memory:${used}\nFree Memory:${free}\n"
 echo "";echo ""
 title "Top 5 Memory-Consuming Proccesses"
-out="$(top -n 1 -b -o '%MEM' | awk 'NR==7,NR==12')"
+out="$(top -n 1 -b -o '%MEM' | awk 'NR==7,NR==12 {print $1,$2,$10,$12}')"
 echo "$out"
