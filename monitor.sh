@@ -52,8 +52,7 @@ done
 
 # i need to fix this
 title "CPU Usage"
-#out=`top`
-echo "$out"
+echo "Current CPU Usage: "$[100-$(vmstat 1 2|tail -1|awk '{print $15}')]"%"
 echo "";echo ""
 title "Memory Usage"
 out=$(free -h | awk 'NR==2 {print $2,$3,$4}')
