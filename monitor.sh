@@ -56,13 +56,13 @@ title "CPU Usage"
 echo "$out"
 echo "";echo ""
 title "Memory Usage"
-out=$(free | awk 'NR==2 {print $2,$3,$4}')
+out=$(free -h | awk 'NR==2 {print $2,$3,$4}')
 arr=($out)
-total=$(( ${arr[0]} ))
-total=$( KbToGb $total ) 
+total=${arr[0]}
 used=${arr[1]}
-used=$( KbToGb $used )
 free=${arr[2]}
-free=$( KbToGb $free )
-printf "Total Memory:${total}GB\nUsed Memory:${used}GB\nFree Memory:${free}GB\n"
+printf "Total Memory:${total}\nUsed Memory:${used}\nFree Memory:${free}\n"
 echo "";echo ""
+title "Top 5 Memory-Consuming Proccesses"
+out="$(top -n 1 -b -o '%MEM' | awk 'NR==7,NR==12')"
+echo "$out"
