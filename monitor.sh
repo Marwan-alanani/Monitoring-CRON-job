@@ -52,7 +52,7 @@ done
 
 # i need to fix this
 title "CPU Usage"
-echo "Current CPU Usage: "$[100-$(vmstat 1 2|tail -1|awk '{print $15}')]"%"
+echo "Current CPU Usage: "$(top -bn1 | grep "Cpu(s)" | awk '{print 100 - $8}')"%"
 echo "";echo ""
 title "Memory Usage"
 out=$(free -h | awk 'NR==2 {print $2,$3,$4}')
