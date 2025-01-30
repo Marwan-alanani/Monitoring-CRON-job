@@ -23,7 +23,8 @@ function annotate()
 {
 	echo -e "${YELLOW}=============================================================${NC}"
 }
-send_mail=0
+
+echo"";echo""
 date_=$(date)
 echo -e "${BLUE}System Monitoring Report - $date_"
 
@@ -40,9 +41,8 @@ i=0
 for percent in "${percentages[@]}"
 do
 	percent=${percent::-1}
-	if [ $i -gt 0 ] && [ $percent -ge 80 ]
+	if [ $i -gt 0 ] && [ $percent -ge 1 ]
 	then
-		send_mail=1
 		warn "${sources[$i]}"
 	fi
 	i=$(( $i + 1 ))
@@ -55,8 +55,7 @@ title "CPU Usage"
 cpu_usage=$(top -bn1 | grep "Cpu(s)" | awk '{print 100 - $8}')
 bool=$(echo "$cpu_usage >= 80" | bc) 
 if [ "$bool"  -eq "1" ] ; then
-	echo -e "${RED}CPU usage exceeds 80%${NC}"
-	send_mail=1
+	echo -e "${RED}Warning:CPU usage exceeds 80%${NC}"
 fi
 echo "Current CPU Usage: "$cpu_usage"%"
 echo "";echo ""
