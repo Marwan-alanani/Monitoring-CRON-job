@@ -41,7 +41,7 @@ i=0
 for percent in "${percentages[@]}"
 do
 	percent=${percent::-1}
-	if [ $i -gt 0 ] && [ $percent -ge 1 ]
+	if [ $i -gt 0 ] && [ $percent -ge 80 ]
 	then
 		warn "${sources[$i]}"
 	fi
