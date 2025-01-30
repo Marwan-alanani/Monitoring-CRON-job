@@ -42,18 +42,25 @@ do
 	percent=${percent::-1}
 	if [ $i -gt 0 ] && [ $percent -ge 80 ]
 	then
+		send_mail=1
 		warn "${sources[$i]}"
 	fi
-	i=$(( "$i" + 1 ))
+	i=$(( $i + 1 ))
 done
 
 
 
 
-# i need to fix this
 title "CPU Usage"
-echo "Current CPU Usage: "$(top -bn1 | grep "Cpu(s)" | awk '{print 100 - $8}')"%"
+cpu_usage=$(top -bn1 | grep "Cpu(s)" | awk '{print 100 - $8}')
+bool=$(echo "$cpu_usage >= 80" | bc) 
+if [ "$bool"  -eq "1" ] ; then
+	echo -e "${RED}CPU usage exceeds 80%${NC}"
+	send_mail=1
+fi
+echo "Current CPU Usage: "$cpu_usage"%"
 echo "";echo ""
+
 title "Memory Usage"
 out=$(free -h | awk 'NR==2 {print $2,$3,$4}')
 arr=($out)
