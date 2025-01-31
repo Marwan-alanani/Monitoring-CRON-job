@@ -23,16 +23,19 @@ function annotate()
 {
 	echo -e "${YELLOW}=============================================================${NC}"
 }
-
-echo"";echo""
+report=""
+send_mail=0
+report+="\n\n"
 date_=$(date)
-echo -e "${BLUE}System Monitoring Report - $date_"
+report+="${BLUE}System Monitoring Report - $date_\n"
+report+="${YELLOW}=============================================================${NC}\n"
 
-annotate
 
-title "Disk Usage"
+add=`title "Disk Usage"`
+report+=$add
+report+="\n"
 disk_use="$(df --output=source,size,used,avail,pcent,target -h)"
-echo "$disk_use"
+report+="$disk_use"
 sources="$(df --output=source -h)"
 sources=($sources)
 percentages="$(df --output=pcent -h)"
@@ -43,31 +46,50 @@ do
 	percent=${percent::-1}
 	if [ $i -gt 0 ] && [ $percent -ge 80 ]
 	then
-		warn "${sources[$i]}"
+		add=`warn "${sources[$i]}"` 
+		send_mail=1
+		report+="\n"
+		report+=$add
 	fi
 	i=$(( $i + 1 ))
 done
 
 
 
+report+="\n\n"
 
-title "CPU Usage"
+add=`title "CPU Usage"`
+report+=$add
+report+="\n"
 cpu_usage=$(top -bn1 | grep "Cpu(s)" | awk '{print 100 - $8}')
 bool=$(echo "$cpu_usage >= 80" | bc) 
+report+="Current CPU Usage: "$cpu_usage"%"
 if [ "$bool"  -eq "1" ] ; then
-	echo -e "${RED}Warning:CPU usage exceeds 80%${NC}"
+	report+="\n"
+	report+="${RED}Warning:CPU usage exceeds 80%${NC}"
+	send_mail=1
 fi
-echo "Current CPU Usage: "$cpu_usage"%"
-echo "";echo ""
+report+="\n\n"
 
-title "Memory Usage"
+add=`title "Memory Usage"`
+report+="$add"
+report+="\n"
 out=$(free -h | awk 'NR==2 {print $2,$3,$4}')
 arr=($out)
 total=${arr[0]}
 used=${arr[1]}
 free=${arr[2]}
-printf "Total Memory:${total}\nUsed Memory:${used}\nFree Memory:${free}\n"
-echo "";echo ""
-title "Top 5 Memory-Consuming Proccesses"
+report+="Total Memory:${total}\nUsed Memory:${used}\nFree Memory:${free}"
+report+="\n\n"
+add=`title "Top 5 Memory-Consuming Proccesses"`
+report+=$add
+report+="\n"
 out="$(top -n 1 -b -o '%MEM' | awk 'NR==7,NR==12 {print $1,$2,$10,$12}')"
-echo "$out"
+report+="$out"
+report+="\n\n"
+echo -e "$report"
+
+if [ $send_mail -eq 1 ];then
+	echo "$report" | mail -s "Monitoring Report" marwan-walid1@hotmail.com
+fi
+
