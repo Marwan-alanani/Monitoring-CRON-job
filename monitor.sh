@@ -92,4 +92,4 @@ echo -e "$report"
 if [ $send_mail -eq 1 ];then
 	echo "$report" | mail -s "Monitoring Report" youremail@example.com
 fi
-echo $report >> systemreport.log
+echo "$report" >> systemreport.log
