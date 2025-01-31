@@ -24,3 +24,4 @@ To use the script, simply download it to your system and make it executable:
 wget https://github.com/Marwan-alanani/Monitoring-cron-job.git
 chmod +x monitor.sh
 chmod +x monitoring.sh
+![Cron job](https://github.com/Marwan-alanani/Monitoring-CRON-job/blob/main/crontab.png) 
