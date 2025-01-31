@@ -1,5 +1,5 @@
 # System Monitoring Script
-
+![Cron job](https://github.com/Marwan-alanani/Monitoring-cron-job/blob/main/crontab.png?raw=true) 
 ## Overview
 
 This is a Bash script designed to monitor key system metrics, including disk usage, CPU usage, and memory usage, providing warnings when any of these metrics exceed 80%. The script outputs a formatted system monitoring report, highlighting potential issues to help with system management.
@@ -24,4 +24,5 @@ To use the script, simply download it to your system and make it executable:
 wget https://github.com/Marwan-alanani/Monitoring-cron-job.git
 chmod +x monitor.sh
 chmod +x monitoring.sh
-![Cron job](https://github.com/Marwan-alanani/Monitoring-cron-job/blob/main/crontab.png) 
+
+
