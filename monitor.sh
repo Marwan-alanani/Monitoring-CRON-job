@@ -90,6 +90,6 @@ report+="\n\n"
 echo -e "$report"
 
 if [ $send_mail -eq 1 ];then
-	echo "$report" | mail -s "Monitoring Report" marwan-walid1@hotmail.com
+	echo "$report" | mail -s "Monitoring Report" youremail@example.com
 fi
 
